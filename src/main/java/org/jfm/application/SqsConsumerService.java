@@ -8,7 +8,6 @@ import software.amazon.awssdk.services.sqs.model.DeleteMessageRequest;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import java.util.List;
-import org.jfm.domain.EmailRequest;
 
 @ApplicationScoped
 public class SqsConsumerService {
@@ -33,7 +32,7 @@ public class SqsConsumerService {
         for (Message message : messages) {
             try {
                 String[] parts = message.body().split("\\.");
-                 if (parts.length == 2) {
+                if (parts.length == 2) {
                     String email = parts[1];
 
                     // Send the "Success" message
