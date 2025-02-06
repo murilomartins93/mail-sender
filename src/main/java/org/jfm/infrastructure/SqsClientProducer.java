@@ -12,8 +12,8 @@ public class SqsClientProducer {
     @Produces
     public SqsClient sqsClient() {
         return SqsClient.builder()
-                .region(Region.of("your-region")) // Replace with your AWS region
-                .credentialsProvider(DefaultCredentialsProvider.create()) // Use DefaultCredentialsProvider
+                .region(Region.of("us-east-1")) 
+                .credentialsProvider(DefaultCredentialsProvider.create()) 
                 .build();
     }
 }

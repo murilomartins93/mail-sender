@@ -20,7 +20,7 @@ public class SqsConsumerService {
     EmailService emailService;
 
     private final Gson gson = new Gson(); // Initialize Gson
-    private final String queueUrl = "https://sqs.your-region.amazonaws.com/your-account-id/email-queue";
+    private final String queueUrl = "https://sqs.us-east-1.amazonaws.com/520576585750/framer-notification";
 
     public void processMessages() {
         List<Message> messages = sqsClient.receiveMessage(ReceiveMessageRequest.builder()

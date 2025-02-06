@@ -11,7 +11,7 @@ public class SqsScheduler {
     @Inject
     SqsConsumerService sqsConsumerService;
 
-    @Scheduled(every = "10s") // Use the correct Scheduled annotation
+    @Scheduled(every = "10s") 
     void pollSqsQueue() {
         sqsConsumerService.processMessages();
     }
