@@ -12,11 +12,11 @@ public class EmailService {
     @Inject
     Mailer mailer;
 
-    public void sendEmail(EmailRequest emailRequest) {
-        mailer.send(Mail.withText( // Use the correct Mail class
-            emailRequest.getTo(),
-            emailRequest.getSubject(),
-            emailRequest.getBody()
+    public void sendEmail(String email, String messageContent) {
+        mailer.send(Mail.withText(
+            email,
+            "FiapX Video Notification",
+            messageContent
         ));
     }
 }

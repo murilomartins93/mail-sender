@@ -32,12 +32,21 @@ public class SqsConsumerService {
 
         for (Message message : messages) {
             try {
-                EmailRequest emailRequest = gson.fromJson(message.body(), EmailRequest.class); // Use Gson
-                emailService.sendEmail(emailRequest);
-                sqsClient.deleteMessage(DeleteMessageRequest.builder()
-                        .queueUrl(queueUrl)
-                        .receiptHandle(message.receiptHandle())
-                        .build());
+                String[] parts = message.body().split("\\.");
+                 if (parts.length == 2) {
+                    String email = parts[1];
+
+                    // Send the "Success" message
+                    emailService.sendEmail(email, "Success! Your video is ready!");
+
+                    // Delete the message from the queue
+                    sqsClient.deleteMessage(DeleteMessageRequest.builder()
+                            .queueUrl(queueUrl)
+                            .receiptHandle(message.receiptHandle())
+                            .build());
+                } else {
+                    System.err.println("Invalid message format: " + message.body());
+                }
             } catch (Exception e) {
                 System.err.println("Failed to process message: " + e.getMessage());
             }
