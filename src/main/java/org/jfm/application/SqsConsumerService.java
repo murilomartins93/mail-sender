@@ -1,6 +1,7 @@
 package org.jfm.application;
 
 import com.google.gson.Gson;
+import org.jboss.logging.Logger;
 import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.services.sqs.model.Message;
 import software.amazon.awssdk.services.sqs.model.ReceiveMessageRequest;
