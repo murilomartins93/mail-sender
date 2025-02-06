@@ -22,11 +22,13 @@ public class SqsConsumerService {
     @Inject
     SqsConfig sqsConfig;
 
-    private final Gson gson = new Gson();
+    private static final Logger LOG = Logger.getLogger(SqsConsumerService.class);
 
     public void processMessages() {
+
+        String queueUrl = sqsConfig.queueUrl();
         List<Message> messages = sqsClient.receiveMessage(ReceiveMessageRequest.builder()
-                .queueUrl(sqsConfig.queueUrl())
+                .queueUrl(queueUrl)
                 .maxNumberOfMessages(10)
                 .waitTimeSeconds(5)
                 .build())
@@ -36,21 +38,18 @@ public class SqsConsumerService {
             try {
                 String[] parts = message.body().split("\\.");
                 if (parts.length == 2) {
-                    String email = parts[1];
-
-                    // Send the "Success" message
-                    emailService.sendEmail(email, "Success! Your video is ready!");
-
-                    // Delete the message from the queue
+                    String videoId = parts[0];
+                    String userEmail = parts[1];
+                    emailService.sendEmail(userEmail, videoId);  // Updated method
                     sqsClient.deleteMessage(DeleteMessageRequest.builder()
-                            .queueUrl(sqsConfig.queueUrl())
+                            .queueUrl(queueUrl)
                             .receiptHandle(message.receiptHandle())
                             .build());
                 } else {
-                    System.err.println("Invalid message format: " + message.body());
+                    LOG.errorf("Invalid message: %s", message.body());
                 }
             } catch (Exception e) {
-                System.err.println("Failed to process message: " + e.getMessage());
+                LOG.error("Failed to process message", e);
             }
         }
     }

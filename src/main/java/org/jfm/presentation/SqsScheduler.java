@@ -11,7 +11,7 @@ public class SqsScheduler {
     @Inject
     SqsConsumerService sqsConsumerService;
 
-    @Scheduled(every = "10s") 
+    @Scheduled(every = "1s") 
     void pollSqsQueue() {
         sqsConsumerService.processMessages();
     }
