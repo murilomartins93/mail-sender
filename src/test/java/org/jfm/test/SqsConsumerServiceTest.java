@@ -1,6 +1,5 @@
 package org.jfm.test;
 
-import org.jfm.domain.EmailRequest;
 import org.jfm.application.SqsConsumerService;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
@@ -10,7 +9,6 @@ import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.services.sqs.model.Message;
 import software.amazon.awssdk.services.sqs.model.ReceiveMessageResponse;
 import jakarta.inject.Inject;
-import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -27,7 +25,7 @@ public class SqsConsumerServiceTest {
     void testProcessMessages() {
         // Mock SQS response
         Message message = Message.builder()
-                .body("{\"to\":\"test@example.com\",\"subject\":\"Test\",\"body\":\"Hello\"}")
+                .body("notification.test@example.com")
                 .receiptHandle("dummy-receipt-handle")
                 .build();
         when(sqsClient.receiveMessage(any()))

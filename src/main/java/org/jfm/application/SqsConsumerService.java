@@ -8,6 +8,7 @@ import software.amazon.awssdk.services.sqs.model.DeleteMessageRequest;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import java.util.List;
+import org.jfm.config.SqsConfig;
 
 @ApplicationScoped
 public class SqsConsumerService {
@@ -18,12 +19,14 @@ public class SqsConsumerService {
     @Inject
     EmailService emailService;
 
-    private final Gson gson = new Gson(); // Initialize Gson
-    private final String queueUrl = "https://sqs.us-east-1.amazonaws.com/520576585750/framer-notification";
+    @Inject
+    SqsConfig sqsConfig;
+
+    private final Gson gson = new Gson();
 
     public void processMessages() {
         List<Message> messages = sqsClient.receiveMessage(ReceiveMessageRequest.builder()
-                .queueUrl(queueUrl)
+                .queueUrl(sqsConfig.queueUrl())
                 .maxNumberOfMessages(10)
                 .waitTimeSeconds(5)
                 .build())
@@ -40,7 +43,7 @@ public class SqsConsumerService {
 
                     // Delete the message from the queue
                     sqsClient.deleteMessage(DeleteMessageRequest.builder()
-                            .queueUrl(queueUrl)
+                            .queueUrl(sqsConfig.queueUrl())
                             .receiptHandle(message.receiptHandle())
                             .build());
                 } else {

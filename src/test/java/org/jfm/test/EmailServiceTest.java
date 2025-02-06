@@ -1,6 +1,5 @@
 package org.jfm.test;
 
-import org.jfm.domain.EmailRequest;
 import org.jfm.application.EmailService;
 import io.quarkus.mailer.MockMailbox;
 import io.quarkus.test.junit.QuarkusTest;
@@ -25,13 +24,11 @@ public class EmailServiceTest {
 
     @Test
     void testSendEmail() {
-        EmailRequest request = new EmailRequest();
-        request.setTo("test@example.com");
-        request.setSubject("Test Subject");
-        request.setBody("Test Body");
+        String email = "test@example.com";
+        String messageContent = "Success! Your video is ready!";
 
-        emailService.sendEmail(request);
+        emailService.sendEmail(email, messageContent);
 
-        assertEquals(1, mockMailbox.getMessagesSentTo("test@example.com").size());
+        assertEquals(1, mockMailbox.getMessagesSentTo(email).size());
     }
 }
