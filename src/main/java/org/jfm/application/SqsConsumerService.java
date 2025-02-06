@@ -37,7 +37,7 @@ public class SqsConsumerService {
 
         for (Message message : messages) {
             try {
-                String[] parts = message.body().split("\\.");
+                String[] parts = message.body().split("\\.", 2);
                 if (parts.length == 2) {
                     String videoId = parts[0];
                     String userEmail = parts[1];
