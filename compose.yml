@@ -3,6 +3,15 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
+    environment:
+      - SQS_QUEUE_URL=https://sqs.us-east-1.amazonaws.com/520576585750/framer-notification
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - AWS_REGION=us-east-1
+      - SMTP_HOST=smtp-mail.outlook.com
+      - SMTP_PORT=587
+      - SMTP_USERNAME=fiap44@outlook.com
+      - SMTP_PASSWORD=jfm-fiapx-api-video
     ports:
       - "8080:8080"
     networks:
