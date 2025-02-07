@@ -53,15 +53,31 @@
         <!-- AWS SDK for SQS -->
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
-            <artifactId>sqs</artifactId>
-            <version>2.17.89</version>
+            <artifactId>bom</artifactId>
+            <version>2.27.21</version>
+            <type>pom</type>
+            <scope>import</scope>
         </dependency>
 
-        <!-- AWS SDK Credentials -->
+        <dependency>
+            <groupId>io.quarkiverse.amazonservices</groupId>
+            <artifactId>quarkus-amazon-sqs</artifactId>
+            <version>3.2.0</version>
+        </dependency>
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
-            <artifactId>auth</artifactId>
-            <version>2.17.89</version>
+            <artifactId>url-connection-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>aws-crt-client</artifactId>
+        </dependency>
+
+        <!-- Apache Commons Logging dependency -->
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.2</version>
         </dependency>
 
         <!-- Other Quarkus Dependencies -->
@@ -159,8 +175,7 @@
                 </executions>
                 <configuration>
                     <systemPropertyVariables>
-                        <native.image.path>
-                            ${project.build.directory}/${project.build.finalName}-runner</native.image.path>
+                        <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
                         <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
                         <maven.home>${maven.home}</maven.home>
                     </systemPropertyVariables>
