@@ -1,92 +1,135 @@
-# mail-sender
+# Mail Sender Application with Hexagonal Architecture
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+A Quarkus app for sending emails via AWS SQS messages. Uses Hexagonal Architecture for clean separation of concerns.
 
-If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.
+## Features
 
-## Running the application in dev mode
+- Consumes email requests from AWS SQS
+- Sends emails via SMTP
+- Scheduled polling of messages
+- Configurable via environment variables
+- High test coverage (BDD + Unit tests)
 
-You can run your application in dev mode that enables live coding using:
+## Hexagonal Structure
 
-```shell script
+### Core Layers
+
+- **Domain**: `domain/` (EmailRequest model, validation logic)
+- **Application**: `application/` (EmailService, SqsConsumerService)
+
+### Adapters
+
+- **Incoming**: `presentation/` (SqsScheduler triggers processing)
+- **Outgoing**: `infrastructure/` (SqsClientProducer, SMTP client)
+
+## Project Structure
+
+### Source Code
+
+- `src/main/java/org/jfm/config/`: Configuration classes
+- `src/main/java/org/jfm/domain/`: EmailRequest model
+- `src/main/java/org/jfm/application/`: Business logic
+- `src/main/java/org/jfm/infrastructure/`: AWS/SMTP implementations
+- `src/main/java/org/jfm/presentation/`: Scheduler entry points
+
+### Tests
+
+- `src/test/java/org/jfm/test/`: Unit tests
+- `src/test/java/org/jfm/test/`: BDD tests (Cucumber)
+
+## Dependencies
+
+- Quarkus Framework
+- AWS SDK for SQS
+- JavaMail (SMTP)
+- JUnit 5, Mockito, Cucumber
+
+## Configuration
+
+Edit `src/main/resources/application.properties`:
+
+```properties
+# SMTP
+quarkus.mailer.host=smtp.example.com  
+quarkus.mailer.port=587  
+quarkus.mailer.username=user@example.com  
+quarkus.mailer.password=secret  
+
+# AWS SQS
+aws.sqs.queue-url=https://sqs.region.amazonaws.com/account-id/queue-name  
+aws.region=us-east-1  
+```
+
+## Build & Run
+
+### Dev Mode
+
+```sh
 ./mvnw quarkus:dev
 ```
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at <http://localhost:8080/q/dev/>.
+### Package
 
-## Packaging and running the application
-
-The application can be packaged using:
-
-```shell script
-./mvnw package
+```sh
+./mvnw package # JAR: target/quarkus-app/quarkus-run.jar
 ```
 
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
+### Native Executable
 
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
-
-If you want to build an _über-jar_, execute the following command:
-
-```shell script
-./mvnw package -Dquarkus.package.jar.type=uber-jar
+```sh
+./mvnw package -Dnative # Run: ./target/mail-sender-1.0.0-SNAPSHOT-runner
 ```
 
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
+## Testing
 
-## Creating a native executable
+### Run All Tests
 
-You can create a native executable using:
-
-```shell script
-./mvnw package -Dnative
+```sh
+./mvnw test
 ```
 
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
+### Code Coverage
 
-```shell script
-./mvnw package -Dnative -Dquarkus.native.container-build=true
+After tests: open `target/site/jacoco/index.html`
+
+### BDD Tests
+
+Feature files in `src/test/resources/features/`:
+
+```gherkin
+Feature: Email Processing  
+  Scenario: Valid email  
+    Given valid SQS message  
+    When processed  
+    Then email sent and message deleted  
 ```
 
-You can then execute your native executable with: `./target/mail-sender-1.0.0-SNAPSHOT-runner`
+Run:
 
-If you want to learn more about building native executables, please consult <https://quarkus.io/guides/maven-tooling>.
+```sh
+./mvnw test -Dtest=*CucumberTest*
+```
 
-## Related Guides
+## Flow
 
-- Hibernate ORM ([guide](https://quarkus.io/guides/hibernate-orm)): Define your persistent model with Hibernate ORM and Jakarta Persistence
-- Hibernate ORM with Panache ([guide](https://quarkus.io/guides/hibernate-orm-panache)): Simplify your persistence code for Hibernate ORM via the active record or the repository pattern
+1. Scheduler triggers every 30s
+2. SQS client fetches messages
+3. Messages → EmailRequest objects
+4. EmailService sends via SMTP
+5. Messages deleted from queue
 
-## Provided Code
+## Contributing
 
-### Hibernate ORM
+1. Fork repo
+2. Create branch: `git checkout -b feature/your-feature`
+3. Commit with BDD scenarios
+4. Push: `git push origin feature/your-feature`
+5. Open PR
 
-Create your first JPA entity
+## License
 
-[Related guide section...](https://quarkus.io/guides/hibernate-orm)
+MIT License - See LICENSE file.
 
-[Related Hibernate with Panache section...](https://quarkus.io/guides/hibernate-orm-panache)
+## FIAP - HACKATHON
 
-
-
-
-src/main/java/com/example/
-├── config/
-│   ├── MailConfig.java
-│   └── SqsConfig.java
-├── domain/
-│   └── EmailRequest.java
-├── application/
-│   ├── EmailService.java
-│   └── SqsConsumerService.java
-├── infrastructure/
-│   └── SqsClientProducer.java
-├── presentation/
-│   └── SqsScheduler.java
-└── Main.java
-
-src/test/java/com/example/
-├── application/
-│   ├── EmailServiceTest.java
-│   └── SqsConsumerServiceTest.java
+This project was produced as an assignment for a postgraduation course in Software Engineering Architecture at FIAP.
